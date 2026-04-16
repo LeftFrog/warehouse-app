@@ -3,3 +3,5 @@
 warehouse.db
 ssh_key
 ssh_key.pub
+warehouse.db-shm
+warehouse.db-wal

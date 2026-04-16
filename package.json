@@ -1,0 +1,13 @@
+{
+  "name": "warehouse-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "cd server && npm install && cd ../client && npm install",
+    "seed": "cd server && node seed.js",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "dev": "echo 'Run in 2 terminals: npm run dev:server  AND  npm run dev:client'",
+    "build": "cd client && npm run build"
+  }
+}

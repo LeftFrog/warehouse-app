@@ -11,7 +11,7 @@ npm run install:all
 ```
 
 ### 2. Seed the database with your inventory data
-Make sure `seed-data.json` is in the project root (the JSON export from the old app), then:
+Make sure `seed-data.json` is in the project root, then:
 ```bash
 npm run seed
 ```
@@ -32,21 +32,6 @@ npm run dev:client
 Runs on http://localhost:3000
 
 Open http://localhost:3000 in your browser.
-
-## Accessing from iPad / other devices
-
-Since the backend runs on your PC, you can access the app from any device on the same network:
-
-1. Find your PC's local IP (e.g. `192.168.1.100`)
-2. In `client/vite.config.js`, change the server config:
-   ```js
-   server: {
-     host: '10.151.62.47',  // add this line
-     port: 3000,
-     proxy: { '/api': 'http://localhost:3001' }
-   }
-   ```
-3. On iPad, go to `http://192.168.1.100:3000`
 
 ## Project Structure
 
@@ -106,8 +91,6 @@ npm run seed
 
 ## Next Steps
 
-- [ ] Excel export
-- [ ] Count mode (walk-through verification)
 - [ ] Add/delete rack sections from UI
 - [ ] SKU master list
 - [ ] Admin auth for SKU management

@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
-import { api } from './api.js';
-import SkidDetail from './components/SkidDetail.jsx';
-import FloorDetail from './components/FloorDetail.jsx';
-import CountMode from './components/CountMode.jsx';
-import ExcelExport from './components/ExcelExport.jsx';
-import './styles.css';
+import { api } from '../api.js';
+import SkidDetail from '../components/SkidDetail.jsx';
+import FloorDetail from '../components/FloorDetail.jsx';
+import CountMode from '../components/CountMode.jsx';
+import ExcelExport from '../components/ExcelExport.jsx';
+import '../styles.css';
 
 const SECTION_MAX = { E: 22, F: 22, G: 16, H: 16, I: 19, J: 16, K: 19 };
 const SECTIONS = [];

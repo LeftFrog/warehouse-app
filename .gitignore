@@ -6,3 +6,4 @@ ssh_key.pub
 warehouse.db-shm
 warehouse.db-wal
 seed-data.json
+/server/serviceAccountKey.json

@@ -10,11 +10,13 @@ export default function Layout ({activeModule, onModuleChange, children}) {
 
     return (
         <div class="app-layout">
-            <button className="hamburger" 
-                onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
-
             <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-                <div className="sidebar-title">Warehouse</div>
+                <div className="sidebar-header">
+                    <button className="hamburger" 
+                        onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
+                    <div className="sidebar-title">Warehouse</div>
+                </div>
+
                 <nav>
                     {NAV_ITEMS.map(item => (
                         <button key={item.key} 

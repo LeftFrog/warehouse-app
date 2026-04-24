@@ -3,7 +3,7 @@ import { auth } from "./firebase.js"
 const BASE = '/api';
 
 async function request(path, opts = {}) {
-  const token = auth.currentUser?.getIdToken();
+  const token = await auth.currentUser?.getIdToken();
   const res = await fetch(`/api${path}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -12,10 +12,9 @@ async function request(path, opts = {}) {
     ...opts,
     body: opts.body ? JSON.stringify(opts.body) : undefined,
   });
-  if (res === 401) {}
+  if (res.status === 401) { }
   return res.json();
 }
-
 export const api = {
   // Stats
   getStats: () => request('/stats'),

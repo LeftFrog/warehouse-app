@@ -1,13 +1,15 @@
-import { act, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import Layout from "./components/Layout"
 import Inventory from "./modules/Inventory"
 import "./styles.css"
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut} from "firebase/auth"
-import { auth } from "./firebase.js"
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth } from './firebase.js';
+import LoginForm from "./components/LoginForm.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeModule, setActiveModule] = useState('inventory');
 
   useEffect(() => {
     return onAuthStateChanged(auth, (u) => {
@@ -18,8 +20,6 @@ export default function App() {
 
   if (loading) return <div className="loading">Loading...</div>;
   if (!user) return <LoginForm />;
-
-  const [activeModule, setActiveModule] = useState('inventory');
 
   return (<Layout activeModule={activeModule} onModuleChange={setActiveModule}>
     {activeModule == 'inventory' && <Inventory />}

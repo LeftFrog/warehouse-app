@@ -1,11 +1,18 @@
+import { auth } from "./firebase.js"
+
 const BASE = '/api';
 
 async function request(path, opts = {}) {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
+  const token = auth.currentUser?.getIdToken();
+  const res = await fetch(`/api${path}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+    },
     ...opts,
     body: opts.body ? JSON.stringify(opts.body) : undefined,
   });
+  if (res === 401) {}
   return res.json();
 }
 

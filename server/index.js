@@ -1,10 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import db from './db.js';
+import { verifyToken } from './auth.js';
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+
+app.use('/api', verifyToken);
 
 // === RACK SKIDS ===
 

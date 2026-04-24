@@ -63,13 +63,16 @@
 }
 
 .hamburger {
-  background: none;
-  border: none;
+  background: var(--surface);
+  z-index: 100;
   color: var(--text);
   font-size: 20px;
   cursor: pointer;
   padding: 4px;
   flex-shrink: 0;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  margin-right: 2px;
 }
 
 .sidebar.open {
@@ -77,6 +80,10 @@
 }
 
 .sidebar:not(.open) .nav-item span:not(.nav-icon) {
+  display: none;
+}
+
+.sidebar:not(.open) .nav-text {
   display: none;
 }
 

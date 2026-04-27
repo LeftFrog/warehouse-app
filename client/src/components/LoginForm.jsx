@@ -28,7 +28,8 @@ export default function LoginForm() {
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
-            <h2 className="login-title">Sign In</h2>
+            <div className="login-title">Sign In</div>
+            <div class="login-desc">Enter your credentials to continue</div>
             <input className="email-input" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
             <input className="password-input" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
             {error && <p style={{ color: 'red' }}>{error}</p>}

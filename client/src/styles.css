@@ -334,19 +334,37 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
 
 .login-form {
   background-color: var(--surface);
-  display: flex;
-  flex-direction: column;
-  border-radius: 8px;
   border: 1px solid var(--border);
-  justify-content: center;
+  border-radius: 12px;
+  padding: 32px 28px;
+  position: relative;
+}
+
+.login-form::before {
+  content: 'AUTHORIZED ACCESS';
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  background: var(--surface);
+  padding: 0 8px;
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  font-weight: 600;
 }
 
 .login-title {
-  align-self: center;
-  color: var(--text);
-  font-family: 'JetBrains Mono';
-  font-size: 52px;
-  padding: 8px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -1.5px;
+}
+
+.login-desc {
+  font-size: 12px;
+  color: var(--dim);
+  margin-bottom: 28px;
 }
 
 input {

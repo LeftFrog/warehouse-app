@@ -242,12 +242,16 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
 .count-done p { color: var(--dim); font-size: 14px; margin-bottom: 20px; }
 
 /* Login Form */
-.login-container {
-  color: var(--bg);
+.login-screen {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 
 .login-form {

@@ -18,7 +18,7 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="login-container">
+    <div className="login-screen">
       <form onSubmit={handleSubmit} className="login-form">
         <h2 className="login-title">Sign In</h2>
         <input className="email-input" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />

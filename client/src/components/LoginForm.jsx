@@ -18,14 +18,23 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="login-screen">
-      <form onSubmit={handleSubmit} className="login-form">
-        <h2 className="login-title">Sign In</h2>
-        <input className="email-input" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
-        <input className="password-input" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button className="login-button" type="submit">Login</button>
-      </form>
-    </div>
+      <div className="login-screen">
+        <div className="corner-br"></div>
+        <div className="login-container">
+          <div className="brand">
+            <span className="brand-icon">🐸</span>
+            <div className="brand-name">easy<span>frogtory</span></div>
+            <div className="brand-sub">Warehouse Inventory</div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="login-form">
+            <h2 className="login-title">Sign In</h2>
+            <input className="email-input" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
+            <input className="password-input" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <button className="login-button" type="submit">Login</button>
+          </form>
+        </div>
+      </div>
   );
 }

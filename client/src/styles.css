@@ -254,6 +254,40 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
   overflow: hidden;
 }
 
+.login-screen::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(245, 158, 11, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 158, 11, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.login-screen::after {
+  content: '';
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  width: 60px;
+  height: 60px;
+  border-left: 2px solid rgba(245, 158, 11, 0.15);
+  border-top: 2px solid rgba(245, 158, 11, 0.15);
+  pointer-events: none;
+}
+
+.corner-br {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-right: 2px solid rgba(245, 158, 11, 0.15);
+  border-bottom: 2px solid rgba(245, 158, 11, 0.15);
+  pointer-events: none;
+}
+
 .login-form {
   background-color: var(--surface);
   display: flex;

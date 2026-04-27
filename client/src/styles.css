@@ -250,6 +250,7 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  min-width: 100vh;
   position: relative;
   overflow: hidden;
 }
@@ -288,12 +289,53 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
   pointer-events: none;
 }
 
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 0 24px;
+  animation: fadeUp 0.5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.brand-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.brand-name {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  margin-bottom: 2px;
+}
+
+.brand-name span {
+  color: var(--accent);
+}
+
+.brand-sub {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--dim);
+  letter-spacing: 3px;
+}
+
 .login-form {
   background-color: var(--surface);
   display: flex;
   flex-direction: column;
-  height: 40vh;
-  width: 40%;
   border-radius: 8px;
   border: 1px solid var(--border);
   justify-content: center;

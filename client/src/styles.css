@@ -369,12 +369,12 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
 
 /* Login form */
 
-.form-group {
+.login-form-group {
   margin-bottom: 18px;
   position: relative;
 }
 
-.form-label {
+.login-form-label {
   display: block;
   font-size: 11px;
   color: var(--dim);
@@ -384,11 +384,11 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
   margin-bottom: 6px;
 }
 
-.form-input-wrap {
+.login-form-input-wrap {
   position: relative;
 }
 
-.form-input-wrap .input-icon {
+.login-form-input-wrap .input-icon {
   position: absolute;
   left: 12px;
   top: 50%;
@@ -399,7 +399,7 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
   transition: color 0.2s;
 }
 
-.form-input {
+.login-form-input-wrap .form-input {
   width: 100%;
   padding: 12px 14px 12px 38px;
   background: var(--bg);
@@ -412,21 +412,21 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-input::placeholder {
+.login-form-input-wrap .form-input::placeholder {
   color: #333;
 }
 
-.form-input:focus {
+.login-form-input-wrap .form-input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
-.form-input:focus + .input-icon,
-.form-input:focus ~ .input-icon {
+.login-form-input-wrap .form-input:focus + .input-icon,
+.login-form-input-wrap .form-input:focus ~ .input-icon {
   color: var(--accent);
 }
 
-  .pw-toggle {
+.login-form-input-wrap .pw-toggle {
   position: absolute;
   right: 12px;
   top: 50%;
@@ -438,7 +438,7 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
   cursor: pointer;
   padding: 4px;
 }
-.pw-toggle:hover { color: var(--text); }
+.login-form-input-wrap .pw-toggle:hover { color: var(--text); }
 
 .login-button {
   width: 100%;

@@ -127,9 +127,9 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
 .more-tag { font-size: 11px; color: var(--accent); }
 
 /* Shared badge base — qty-badge, so-badge, loc-tag extend this */
-.badge, .qty-badge, .so-badge, .loc-tag { padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+.badge, .qty-badge, .so-badge, .loc-tag, .dev-badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; }
 .mini-product { padding: 2px 6px; border-radius: 4px; font-size: 11px; color: var(--dim); background: var(--surface2); }
-.qty-badge { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+.qty-badge  { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
 .so-badge { background: var(--red-dim); color: var(--red); font-weight: 600; }
 .loc-tag { background: var(--surface2); cursor: pointer; border: 1px solid var(--border); }
 
@@ -154,7 +154,10 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
 /* Shared header — products-header and floor-header are identical */
 .products-header, .floor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
-.add-btn { background: var(--accent); color: #000; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+button, .btn, .add-btn {
+  background: var(--accent); color: #000; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.add-btn { border: none;}
 .empty-msg { color: var(--dim); font-size: 13px; padding: 20px; text-align: center; }
 
 .product-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
@@ -325,3 +328,24 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .login-footer { text-align: center; margin-top: 24px; font-size: 11px; color: #2a2a2a; letter-spacing: 1px; }
+
+/* Receiving */
+
+.container #receiving-container {
+  max-width: none;
+}
+
+#receiving-container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dev-badge {
+  background-color: var(--accent-dim);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+}

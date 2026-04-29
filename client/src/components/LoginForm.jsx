@@ -29,26 +29,26 @@ export default function LoginForm() {
 
           <form onSubmit={handleSubmit} className="login-form">
             <div className="login-title">Sign In</div>
-            <div class="login-desc">Enter your credentials to continue</div>
-            <div className="login-form-group">
-              <label className="login-form-label">Email</label>
-              <div className="login-form-input-wrap">
-                <input className="form-input" type="email" id="email" placeholder="you@company.com" autocomplete="email" value={email} onChange={e => setEmail(e.target.value)} required />
+            <div className="login-desc">Enter your credentials to continue</div>
+            <div className="form-group">
+              <label className="form-label">Email</label>
+              <div className="form-input-wrap">
+                <input className="login-input" type="email" id="email" placeholder="you@company.com" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} required />
                 <span className="input-icon">✉</span>
               </div>
             </div>
-            <div className="login-form-group">
-              <label className="login-form-label">Email</label>
-              <div className="login-form-input-wrap">
-                <input className="form-input" type="password" id="password" placeholder="••••••••" autocomplete="current-password" value={password} onChange={e => setPassword(e.target.value)} required />
+            <div className="form-group">
+              <label className="form-label">Email</label>
+              <div className="form-input-wrap">
+                <input className="login-input" type="password" id="password" placeholder="••••••••" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} required />
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 <span className="input-icon">🔒</span>
-                <button class="pw-toggle" id="pw-toggle" type="button">👁</button>
+                <button className="pw-toggle" id="pw-toggle" type="button">👁</button>
               </div>
             </div>
             <button className="login-button" type="submit">Login</button>
           </form>
-          <div class="login-footer">EASYFROGTORY v1.0</div>
+          <div className="login-footer">EASYFROGTORY v1.0</div>
         </div>
       </div>
   );

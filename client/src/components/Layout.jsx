@@ -9,7 +9,7 @@ export default function Layout ({activeModule, onModuleChange, children}) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
-        <div class="app-layout">
+        <div className="app-layout">
             <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
                     <button className="hamburger" 
@@ -23,7 +23,7 @@ export default function Layout ({activeModule, onModuleChange, children}) {
                         className={`nav-item ${activeModule === item.key ? 'active' : ''}`}
                         onClick={ () => { onModuleChange(item.key); setSidebarOpen(false);}}>
                             <span className="nav-icon">{item.icon}</span>
-                            <span classNmae="nav-text">{item.label}</span>
+                            <span className="nav-text">{item.label}</span>
                         </button>
                     ))}
                 </nav>

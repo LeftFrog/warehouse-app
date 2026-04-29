@@ -157,7 +157,7 @@ export default function Inventory() {
           <input className="search-input" placeholder="Search by SKU or SO number..." value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)} autoFocus />
           {searchResults && searchResults.length > 0 && (
-            <div style={{ marginTop: 16 }}>
+            <div className="mt-16">
               <h3 className="subtitle">Totals</h3>
               {searchResults.map((t, i) => (
                 <div key={i} className="total-card">

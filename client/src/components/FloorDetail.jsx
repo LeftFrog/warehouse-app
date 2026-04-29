@@ -59,9 +59,9 @@ export default function FloorDetail({ floorId, onBack }) {
         <h1>📍 Floor: {floor.name}{floor.is_order ? ' 📦' : ''}</h1>
       </div>
 
-      <div style={{ marginBottom: 12 }}>
-        <input className="form-input" defaultValue={floor.name} placeholder="Skid name..."
-          style={{ marginBottom: 0 }} onBlur={e => { if (e.target.value !== floor.name) handleNameChange(e.target.value); }} />
+      <div className="mb-12">
+        <input className="form-input mb-0" defaultValue={floor.name} placeholder="Skid name..."
+          onBlur={e => { if (e.target.value !== floor.name) handleNameChange(e.target.value); }} />
       </div>
 
       <div className="verify-row">
@@ -104,7 +104,7 @@ export default function FloorDetail({ floorId, onBack }) {
         )
       ))}
 
-      <div style={{ marginTop: 16 }}>
+      <div className="mt-16">
         <button className="del-floor" onClick={handleDeleteFloor}>Delete Floor Skid</button>
       </div>
     </div>

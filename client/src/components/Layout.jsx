@@ -3,7 +3,7 @@ import { useState } from 'react';
 const NAV_ITEMS = [
     { key: 'inventory', label: 'Inventory', icon:'🏭' },
     { key: 'receiving', label: 'Receiving', icon:'📦' }
-]
+];
 
 export default function Layout ({activeModule, onModuleChange, children}) {
     const [sidebarOpen, setSidebarOpen] = useState(false);

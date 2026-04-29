@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import Layout from "./components/Layout"
 import Inventory from "./modules/Inventory"
+import Receiving from "./modules/Receiving.jsx"
 import "./styles.css"
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from './firebase.js';

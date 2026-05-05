@@ -354,3 +354,37 @@ button, .btn, .add-btn {
   letter-spacing: 1.5px;
   color: var(--accent);
 }
+
+.input-invalid {
+  border-color: var(--red) !important;
+}
+.validation-msg {
+  font-size: 11px;
+  color: var(--red);
+  margin-top: -4px;
+  margin-bottom: 8px;
+}
+.sku-preview {
+  font-size: 11px;
+  color: var(--green);
+  margin-top: -4px;
+  margin-bottom: 8px;
+}
+.ac-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ac-id {
+  font-weight: 600;
+  color: var(--text);
+}
+.ac-name {
+  color: var(--dim);
+  font-size: 11px;
+  text-align: right;
+}
+.btn-save:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

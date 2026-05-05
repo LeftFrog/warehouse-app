@@ -63,4 +63,14 @@ export const api = {
   getSections: () => request('/sections'),
   addSection: (section) => request('/sections', { method: 'POST', body: { section } }),
   deleteSection: (section) => request(`/sections/${section}`, { method: 'DELETE' }),
+
+  // EasyTrim
+  getEtStats: () => request('/et/stats'),
+  getAllEtSkids: () => request('/et/skids'),
+  getEtSkid: (sec, lvl, pos) => request(`/et/skids/${sec}/${lvl}/${pos}`),
+  addEtProduct: (sec, lvl, pos, product) => request(`/et/skids/${sec}/${lvl}/${pos}/products`, { method: 'POST', body: product }),
+  updateEtProduct: (id, product) => request(`/et/products/${id}`, { method: 'PUT', body: product }),
+  deleteEtProduct: (id) => request(`/et/products/${id}`, { method: 'DELETE' }),
+  toggleEtVerified: (sec, lvl, pos) => request(`/et/skids/${sec}/${lvl}/${pos}/verify`, { method: 'PUT' }),
+  updateEtOrder: (sec, lvl, pos, data) => request(`/et/skids/${sec}/${lvl}/${pos}/order`, { method: 'PUT', body: data }),
 };

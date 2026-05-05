@@ -425,4 +425,85 @@ app.delete('/api/sections/:section', (req, res) => {
   res.json({ ok: true });
 });
 
+// === EASYTRIM SKIDS ===
+
+app.get('/api/et/skids', (req, res) => {
+  const skids = db.prepare(`SELECT * FROM easytrim_skids`).all();
+  const products = db.prepare(`SELECT * FROM easytrim_products ORDER BY id`).all();
+  const productsBySkid = {};
+  for (const p of products) {
+    if (!productsBySkid[p.skid_id]) productsBySkid[p.skid_id] = [];
+    productsBySkid[p.skid_id].push(p);
+  }
+  res.json(skids.map(s => ({ ...s, products: productsBySkid[s.id] || [] })));
+});
+
+app.get('/api/et/skids/:section/:level/:position', (req, res) => {
+  const { section, level, position } = req.params;
+  const skid = db.prepare(`SELECT * FROM easytrim_skids WHERE section=? AND level=? AND position=?`).get(section, +level, +position);
+  if (!skid) {
+    return res.json({ section, level: +level, position: +position, products: [], verified: 0, verified_at: null, is_order: 0, so_number: '' });
+  }
+  const products = db.prepare(`SELECT * FROM easytrim_products WHERE skid_id=? ORDER BY id`).all(skid.id);
+  res.json({ ...skid, products });
+});
+
+function ensureEasyTrimSkid(section, level, position) {
+  const existing = db.prepare(`SELECT id FROM easytrim_skids WHERE section=? AND level=? AND position=?`).get(section, level, position);
+  if (!existing) {
+    const info = db.prepare(`INSERT INTO easytrim_skids (section, level, position) VALUES (?, ?, ?)`).run(section, level, position);
+    return info.lastInsertRowid;
+  }
+  return existing.id;
+}
+
+app.post('/api/et/skids/:section/:level/:position/products', (req, res) => {
+  const { section, level, position } = req.params;
+  const { name, qty, notes } = req.body;
+  const skidId = ensureEasyTrimSkid(section, +level, +position);
+  db.prepare(`UPDATE easytrim_skids SET verified=0, verified_at=NULL, updated_at=datetime('now') WHERE id=?`).run(skidId);
+  const info = db.prepare(`INSERT INTO easytrim_products (skid_id, name, qty, notes) VALUES (?, ?, ?, ?)`).run(skidId, name, qty || 0, notes || '');
+  res.json({ id: info.lastInsertRowid, skid_id: skidId, name, qty: qty || 0, notes: notes || '' });
+});
+
+app.put('/api/et/products/:id', (req, res) => {
+  const { name, qty, notes } = req.body;
+  db.prepare(`UPDATE easytrim_products SET name=?, qty=?, notes=? WHERE id=?`).run(name, qty || 0, notes || '', +req.params.id);
+  const prod = db.prepare(`SELECT * FROM easytrim_products WHERE id=?`).get(+req.params.id);
+  if (prod) db.prepare(`UPDATE easytrim_skids SET verified=0, verified_at=NULL, updated_at=datetime('now') WHERE id=?`).run(prod.skid_id);
+  res.json({ ok: true });
+});
+
+app.delete('/api/et/products/:id', (req, res) => {
+  const prod = db.prepare(`SELECT * FROM easytrim_products WHERE id=?`).get(+req.params.id);
+  db.prepare(`DELETE FROM easytrim_products WHERE id=?`).run(+req.params.id);
+  if (prod) db.prepare(`UPDATE easytrim_skids SET verified=0, verified_at=NULL, updated_at=datetime('now') WHERE id=?`).run(prod.skid_id);
+  res.json({ ok: true });
+});
+
+app.put('/api/et/skids/:section/:level/:position/verify', (req, res) => {
+  const { section, level, position } = req.params;
+  const skidId = ensureEasyTrimSkid(section, +level, +position);
+  const skid = db.prepare(`SELECT verified FROM easytrim_skids WHERE id=?`).get(skidId);
+  const newVal = skid.verified ? 0 : 1;
+  const verAt = newVal ? new Date().toISOString() : null;
+  db.prepare(`UPDATE easytrim_skids SET verified=?, verified_at=?, updated_at=datetime('now') WHERE id=?`).run(newVal, verAt, skidId);
+  res.json({ verified: newVal, verified_at: verAt });
+});
+
+app.put('/api/et/skids/:section/:level/:position/order', (req, res) => {
+  const { section, level, position } = req.params;
+  const { is_order, so_number } = req.body;
+  const skidId = ensureEasyTrimSkid(section, +level, +position);
+  db.prepare(`UPDATE easytrim_skids SET is_order=?, so_number=?, updated_at=datetime('now') WHERE id=?`).run(is_order ? 1 : 0, so_number || '', skidId);
+  res.json({ ok: true });
+});
+
+app.get('/api/et/stats', (req, res) => {
+  const active = db.prepare(`SELECT COUNT(DISTINCT skid_id) as c FROM easytrim_products`).get().c;
+  const verified = db.prepare(`SELECT COUNT(*) as c FROM easytrim_skids WHERE verified=1 AND id IN (SELECT DISTINCT skid_id FROM easytrim_products)`).get().c;
+  const totalQty = db.prepare(`SELECT COALESCE(SUM(qty),0) as s FROM easytrim_products`).get().s || 0;
+  res.json({ total: active, verified, totalQty });
+});
+
 app.listen(PORT, () => console.log(`Warehouse API running on http://localhost:${PORT}`));

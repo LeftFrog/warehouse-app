@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { api } from '../api.js';
 import SkidDetail from '../components/SkidDetail.jsx';
+import EasyTrimDetail from '../components/EasyTrimDetail.jsx';
 import FloorDetail from '../components/FloorDetail.jsx';
 import CountMode from '../components/CountMode.jsx';
 import ExcelExport from '../components/ExcelExport.jsx';
@@ -13,26 +14,45 @@ const SECTIONS = [];
 });
 const LEVELS = [6,5,4,3,2,1];
 
+// EasyTrim: update section counts per row to match actual rack layout
+const ET_SECTION_MAX = { A: 9, B: 24, C: 24, D: 24 };
+const ET_SECTIONS = [];
+["A","B","C","D"].forEach(letter => {
+  for (let i = 1; i <= ET_SECTION_MAX[letter]; i++) ET_SECTIONS.push(`${letter}${i}`);
+});
+const ET_ROW_LEVELS = { A: [4,3,2,1], B: [5,4,3,2,1], C: [5,4,3,2,1], D: [5,4,3,2,1] };
+const ET_POSITIONS = [1, 2, 3, 4];
+
 export default function Inventory() {
   const [view, setView] = useState('browse');
+  const [rackType, setRackType] = useState('fastplank');
   const [selectedSkid, setSelectedSkid] = useState(null);
+  const [selectedEtSkid, setSelectedEtSkid] = useState(null);
   const [selectedFloor, setSelectedFloor] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSection, setFilterSection] = useState('');
+  const [etFilterRow, setEtFilterRow] = useState('');
   const [showUnverifiedOnly, setShowUnverifiedOnly] = useState(false);
 
   const [stats, setStats] = useState({ total: 0, verified: 0, totalQty: 0 });
+  const [etStats, setEtStats] = useState({ total: 0, verified: 0, totalQty: 0 });
   const [allSkids, setAllSkids] = useState([]);
+  const [allEtSkids, setAllEtSkids] = useState([]);
   const [config, setConfig] = useState({});
   const [floors, setFloors] = useState([]);
   const [searchResults, setSearchResults] = useState(null);
 
   const reload = async () => {
-    const [s, sk, c, f] = await Promise.all([api.getStats(), api.getAllSkids(), api.getConfig(), api.getFloor()]);
+    const [s, sk, c, f, es, etsk] = await Promise.all([
+      api.getStats(), api.getAllSkids(), api.getConfig(), api.getFloor(),
+      api.getEtStats(), api.getAllEtSkids()
+    ]);
     setStats(s);
     setAllSkids(sk);
     setConfig(c);
     setFloors(f);
+    setEtStats(es);
+    setAllEtSkids(etsk);
   };
 
   useEffect(() => { reload(); }, []);
@@ -42,7 +62,6 @@ export default function Inventory() {
     if (!searchQuery.trim()) { setSearchResults(null); return; }
     const timer = setTimeout(async () => {
       const r = await api.search(searchQuery);
-      // Aggregate
       const totals = {};
       for (const item of [...r.rack, ...r.floor]) {
         const k = item.name;
@@ -56,17 +75,23 @@ export default function Inventory() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Build skid lookup
+  // FastPlank skid lookup
   const skidMap = useMemo(() => {
     const map = {};
-    for (const s of allSkids) {
-      map[`${s.section}-${s.level}-${s.place}`] = s;
-    }
+    for (const s of allSkids) map[`${s.section}-${s.level}-${s.place}`] = s;
     return map;
   }, [allSkids]);
 
+  // EasyTrim skid lookup
+  const etSkidMap = useMemo(() => {
+    const map = {};
+    for (const s of allEtSkids) map[`${s.section}-${s.level}-${s.position}`] = s;
+    return map;
+  }, [allEtSkids]);
+
   const getSkid = (sec, lvl, pl) => skidMap[`${sec}-${lvl}-${pl}`] || { products: [], verified: 0 };
   const getPlaces = (sec, lvl) => config[`${sec}-${lvl}`]?.places || 1;
+  const getEtSkid = (sec, lvl, pos) => etSkidMap[`${sec}-${lvl}-${pos}`] || { products: [], verified: 0 };
 
   const handleExport = async () => {
     const data = await api.exportData();
@@ -95,11 +120,22 @@ export default function Inventory() {
     input.click();
   };
 
-  // Skid detail
+  const activeStats = rackType === 'easytrim' ? etStats : stats;
+
+  // FastPlank skid detail
   if (view === 'skid' && selectedSkid) {
     return (
       <div className="container">
         <SkidDetail skidKey={selectedSkid} onBack={() => { setView('browse'); setSelectedSkid(null); reload(); }} />
+      </div>
+    );
+  }
+
+  // EasyTrim skid detail
+  if (view === 'et-skid' && selectedEtSkid) {
+    return (
+      <div className="container">
+        <EasyTrimDetail skidKey={selectedEtSkid} onBack={() => { setView('browse'); setSelectedEtSkid(null); reload(); }} />
       </div>
     );
   }
@@ -122,7 +158,6 @@ export default function Inventory() {
     );
   }
 
-  // Active skids for list
   const activeSkids = allSkids.filter(s => {
     if (s.products.length === 0 && !s.verified) return false;
     if (filterSection && !s.section.startsWith(filterSection)) return false;
@@ -135,9 +170,9 @@ export default function Inventory() {
       <div className="header"><h1>🏭 Warehouse Inventory</h1></div>
 
       <div className="stats">
-        <div className="stat"><div className="stat-num">{stats.total}</div><div className="stat-label">Active Skids</div></div>
-        <div className="stat"><div className="stat-num">{stats.verified}</div><div className="stat-label">Verified</div></div>
-        <div className="stat"><div className="stat-num">{stats.totalQty}</div><div className="stat-label">Total Pcs</div></div>
+        <div className="stat"><div className="stat-num">{activeStats.total}</div><div className="stat-label">Active Skids</div></div>
+        <div className="stat"><div className="stat-num">{activeStats.verified}</div><div className="stat-label">Verified</div></div>
+        <div className="stat"><div className="stat-num">{activeStats.totalQty}</div><div className="stat-label">Total Pcs</div></div>
       </div>
 
       <div className="io-row">
@@ -183,69 +218,122 @@ export default function Inventory() {
 
       {view === 'browse' && (
         <div>
-          <div className="filter-row">
-            <select value={filterSection} onChange={e => setFilterSection(e.target.value)}>
-              <option value="">All Sections</option>
-              {["E","F","G","H","I","J","K"].map(l => <option key={l} value={l}>{l} Section</option>)}
-            </select>
-            <label className="check-label">
-              <input type="checkbox" checked={showUnverifiedOnly} onChange={e => setShowUnverifiedOnly(e.target.checked)} /> Unverified only
-            </label>
+          <div className="rack-type-row">
+            <button className={`rack-type-btn ${rackType === 'fastplank' ? 'active' : ''}`} onClick={() => setRackType('fastplank')}>FastPlank</button>
+            <button className={`rack-type-btn ${rackType === 'easytrim' ? 'active' : ''}`} onClick={() => setRackType('easytrim')}>EasyTrim</button>
           </div>
 
-          <div className="rack-nav">
-            {["E","F","G","H","I","J","K"].filter(l => !filterSection || l === filterSection).map(letter => {
-              const secs = SECTIONS.filter(s => s.match(new RegExp(`^${letter}\\d`)));
-              return (
-                <div key={letter} className="letter-group">
-                  <div className="letter-label">{letter}</div>
-                  <div className="letter-racks">
-                    {secs.map(sec => (
-                      <div key={sec} className="rack-group">
-                        <div className="level-row">
-                          {LEVELS.map(lvl => {
-                            const places = getPlaces(sec, lvl);
-                            return Array.from({ length: places }, (_, pi) => {
-                              const skid = getSkid(sec, lvl, pi + 1);
-                              const has = skid.products?.length > 0;
-                              const cls = has ? (skid.verified ? 'verified' : 'active') : 'empty';
-                              const key = `${sec}-${lvl}-${pi + 1}`;
-                              const label = `${lvl}${places > 1 ? (pi === 0 ? 'a' : 'b') : ''}`;
-                              return (
-                                <button key={key} className={`cell ${cls}`} title={key}
-                                  onClick={() => { setSelectedSkid(key); setView('skid'); }}>{label}</button>
-                              );
-                            });
-                          })}
-                        </div>
-                        <div className="rack-label">{letter + sec.slice(1)}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="floor-section">
-            <div className="floor-header">
-              <h3 className="subtitle">Floor Skids ({floors.length})</h3>
-              <button className="add-btn" onClick={async () => { await api.addFloorSkid(''); reload(); }}>+ Add Floor Skid</button>
-            </div>
-            {floors.length === 0 && <div className="empty-msg">No floor skids yet.</div>}
-            {floors.map(f => (
-              <div key={f.id} className="floor-skid" onClick={() => { setSelectedFloor(f.id); setView('floor-skid'); }}>
-                <div className="skid-loc">{f.verified ? '✅ ' : ''}{f.name || 'Unnamed'}</div>
-                <div className="skid-info">
-                  {f.is_order && <span className="so-badge">SO {f.so_number || '?'}</span>}
-                  {f.products?.slice(0, 2).map((p, i) => (
-                    <span key={i} className="mini-product">{p.name} ({p.qty})</span>
-                  ))}
-                  {f.products?.length > 2 && <span className="more-tag">+{f.products.length - 2} more</span>}
-                </div>
+          {rackType === 'fastplank' && (
+            <div>
+              <div className="filter-row">
+                <select value={filterSection} onChange={e => setFilterSection(e.target.value)}>
+                  <option value="">All Sections</option>
+                  {["E","F","G","H","I","J","K"].map(l => <option key={l} value={l}>{l} Section</option>)}
+                </select>
+                <label className="check-label">
+                  <input type="checkbox" checked={showUnverifiedOnly} onChange={e => setShowUnverifiedOnly(e.target.checked)} /> Unverified only
+                </label>
               </div>
-            ))}
-          </div>
+
+              <div className="rack-nav">
+                {["E","F","G","H","I","J","K"].filter(l => !filterSection || l === filterSection).map(letter => {
+                  const secs = SECTIONS.filter(s => s.match(new RegExp(`^${letter}\\d`)));
+                  return (
+                    <div key={letter} className="letter-group">
+                      <div className="letter-label">{letter}</div>
+                      <div className="letter-racks">
+                        {secs.map(sec => (
+                          <div key={sec} className="rack-group">
+                            <div className="level-row">
+                              {LEVELS.map(lvl => {
+                                const places = getPlaces(sec, lvl);
+                                return Array.from({ length: places }, (_, pi) => {
+                                  const skid = getSkid(sec, lvl, pi + 1);
+                                  const has = skid.products?.length > 0;
+                                  const cls = has ? (skid.verified ? 'verified' : 'active') : 'empty';
+                                  const key = `${sec}-${lvl}-${pi + 1}`;
+                                  const label = `${lvl}${places > 1 ? (pi === 0 ? 'a' : 'b') : ''}`;
+                                  return (
+                                    <button key={key} className={`cell ${cls}`} title={key}
+                                      onClick={() => { setSelectedSkid(key); setView('skid'); }}>{label}</button>
+                                  );
+                                });
+                              })}
+                            </div>
+                            <div className="rack-label">{letter + sec.slice(1)}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="floor-section">
+                <div className="floor-header">
+                  <h3 className="subtitle">Floor Skids ({floors.length})</h3>
+                  <button className="add-btn" onClick={async () => { await api.addFloorSkid(''); reload(); }}>+ Add Floor Skid</button>
+                </div>
+                {floors.length === 0 && <div className="empty-msg">No floor skids yet.</div>}
+                {floors.map(f => (
+                  <div key={f.id} className="floor-skid" onClick={() => { setSelectedFloor(f.id); setView('floor-skid'); }}>
+                    <div className="skid-loc">{f.verified ? '✅ ' : ''}{f.name || 'Unnamed'}</div>
+                    <div className="skid-info">
+                      {f.is_order && <span className="so-badge">SO {f.so_number || '?'}</span>}
+                      {f.products?.slice(0, 2).map((p, i) => (
+                        <span key={i} className="mini-product">{p.name} ({p.qty})</span>
+                      ))}
+                      {f.products?.length > 2 && <span className="more-tag">+{f.products.length - 2} more</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {rackType === 'easytrim' && (
+            <div>
+              <div className="filter-row">
+                <select value={etFilterRow} onChange={e => setEtFilterRow(e.target.value)}>
+                  <option value="">All Rows</option>
+                  {["A","B","C","D"].map(l => <option key={l} value={l}>{l} Row</option>)}
+                </select>
+              </div>
+
+              <div className="rack-nav">
+                {["A","B","C","D"].filter(l => !etFilterRow || l === etFilterRow).map(letter => {
+                  const secs = ET_SECTIONS.filter(s => s.startsWith(letter));
+                  const levels = ET_ROW_LEVELS[letter];
+                  return (
+                    <div key={letter} className="letter-group">
+                      <div className="letter-label">{letter}</div>
+                      <div className="letter-racks">
+                        {secs.map(sec => (
+                          <div key={sec} className="rack-group">
+                            {levels.map(lvl => (
+                              <div key={lvl} className="et-level-row">
+                                {ET_POSITIONS.map(pos => {
+                                  const skid = getEtSkid(sec, lvl, pos);
+                                  const has = skid.products?.length > 0;
+                                  const cls = has ? (skid.verified ? 'verified' : 'active') : 'empty';
+                                  const key = `${sec}-${lvl}-${pos}`;
+                                  return (
+                                    <button key={key} className={`cell ${cls}`} title={key}
+                                      onClick={() => { setSelectedEtSkid(key); setView('et-skid'); }}>{pos}</button>
+                                  );
+                                })}
+                              </div>
+                            ))}
+                            <div className="rack-label">{sec}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

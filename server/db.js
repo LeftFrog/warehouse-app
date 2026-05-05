@@ -63,6 +63,30 @@ db.exec(`
     places INTEGER NOT NULL DEFAULT 1,
     UNIQUE(section, level)
   );
+
+  CREATE TABLE IF NOT EXISTS easytrim_skids (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    section TEXT NOT NULL,
+    level INTEGER NOT NULL,
+    position INTEGER NOT NULL DEFAULT 1,
+    verified INTEGER NOT NULL DEFAULT 0,
+    verified_at TEXT,
+    is_order INTEGER NOT NULL DEFAULT 0,
+    so_number TEXT DEFAULT '',
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+    UNIQUE(section, level, position)
+  );
+
+  CREATE TABLE IF NOT EXISTS easytrim_products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    skid_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    qty INTEGER NOT NULL DEFAULT 0,
+    notes TEXT DEFAULT '',
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (skid_id) REFERENCES easytrim_skids(id) ON DELETE CASCADE
+  );
 `);
 
 export default db;

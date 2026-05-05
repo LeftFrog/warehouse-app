@@ -79,7 +79,12 @@ export default function EasyTrimDetail({ skidKey, onBack }) {
         <button className="add-btn" onClick={() => { setAdding(true); setEditing(null); }}>+ Add Product</button>
       </div>
 
-      {adding && <ProductForm onSave={handleAdd} onCancel={() => setAdding(false)} />}
+      {adding && <ProductForm
+        requireSku={true}
+        skuCategory="EasyTrim"
+        onSave={handleAdd}
+        onCancel={() => setAdding(false)}
+      />}
       {!adding && (!skid.products || skid.products.length === 0) && <div className="empty-msg">No products on this skid yet.</div>}
 
       {skid.products?.map(p => (

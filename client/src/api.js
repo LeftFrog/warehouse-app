@@ -73,4 +73,17 @@ export const api = {
   deleteEtProduct: (id) => request(`/et/products/${id}`, { method: 'DELETE' }),
   toggleEtVerified: (sec, lvl, pos) => request(`/et/skids/${sec}/${lvl}/${pos}/verify`, { method: 'PUT' }),
   updateEtOrder: (sec, lvl, pos, data) => request(`/et/skids/${sec}/${lvl}/${pos}/order`, { method: 'PUT', body: data }),
+
+   // SKU Master
+  searchSkus: (q, category) => {
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (category) params.set('category', category);
+    return request(`/skus?${params}`);
+  },
+  validateSku: (acumaticaId) => request(`/skus/validate/${encodeURIComponent(acumaticaId)}`),
+  getSkuCategories: () => request('/skus/categories'),
+  addSku: (data) => request('/skus', { method: 'POST', body: data }),
+  updateSku: (id, data) => request(`/skus/${id}`, { method: 'PUT', body: data }),
+  deleteSku: (id) => request(`/skus/${id}`, { method: 'DELETE' }),
 };

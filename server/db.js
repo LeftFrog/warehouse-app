@@ -87,6 +87,17 @@ db.exec(`
     created_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (skid_id) REFERENCES easytrim_skids(id) ON DELETE CASCADE
   );
+
+  CREATE TABLE IF NOT EXISTS sku_master (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    acumatica_id TEXT NOT NULL UNIQUE,
+    product_name TEXT NOT NULL,
+    description TEXT DEFAULT '',
+    category TEXT DEFAULT '',
+    item_class TEXT DEFAULT '',
+    active INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
 `);
 
 export default db;

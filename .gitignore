@@ -7,3 +7,4 @@ warehouse.db-shm
 warehouse.db-wal
 seed-data.json
 /server/serviceAccountKey.json
+sku_master.json

@@ -506,4 +506,71 @@ app.get('/api/et/stats', (req, res) => {
   res.json({ total: active, verified, totalQty });
 });
 
+// === SKU MASTER ===
+
+// Search SKUs (for autocomplete/validation)
+app.get('/api/skus', (req, res) => {
+  const q = req.query.q || '';
+  const category = req.query.category || '';
+  let query = 'SELECT * FROM sku_master WHERE active=1';
+  const params = [];
+
+  if (q) {
+    query += ' AND (acumatica_id LIKE ? OR product_name LIKE ?)';
+    params.push(`%${q}%`, `%${q}%`);
+  }
+  if (category) {
+    query += ' AND category=?';
+    params.push(category);
+  }
+
+  query += ' ORDER BY product_name LIMIT 50';
+  res.json(db.prepare(query).all(...params));
+});
+
+// Validate a SKU exists
+app.get('/api/skus/validate/:acumaticaId', (req, res) => {
+  const sku = db.prepare('SELECT * FROM sku_master WHERE acumatica_id=? AND active=1')
+    .get(req.params.acumaticaId);
+  res.json({ valid: !!sku, sku: sku || null });
+});
+
+// Get all SKU categories
+app.get('/api/skus/categories', (req, res) => {
+  const cats = db.prepare('SELECT DISTINCT category FROM sku_master WHERE active=1 AND category != "" ORDER BY category').all();
+  res.json(cats.map(c => c.category));
+});
+
+// Admin: add new SKU
+app.post('/api/skus', (req, res) => {
+  const { acumatica_id, product_name, description, category, item_class } = req.body;
+  if (!acumatica_id || !product_name) {
+    return res.status(400).json({ error: 'acumatica_id and product_name required' });
+  }
+  try {
+    db.prepare('INSERT INTO sku_master (acumatica_id, product_name, description, category, item_class) VALUES (?,?,?,?,?)')
+      .run(acumatica_id, product_name, description || '', category || '', item_class || '');
+    res.json({ ok: true });
+  } catch (e) {
+    if (e.message.includes('UNIQUE')) {
+      return res.status(400).json({ error: 'SKU already exists' });
+    }
+    throw e;
+  }
+});
+
+// Admin: update SKU
+app.put('/api/skus/:id', (req, res) => {
+  const { product_name, description, category, item_class, active } = req.body;
+  db.prepare('UPDATE sku_master SET product_name=?, description=?, category=?, item_class=?, active=? WHERE id=?')
+    .run(product_name, description || '', category || '', item_class || '', active !== undefined ? (active ? 1 : 0) : 1, +req.params.id);
+  res.json({ ok: true });
+});
+
+// Admin: delete SKU
+app.delete('/api/skus/:id', (req, res) => {
+  db.prepare('DELETE FROM sku_master WHERE id=?').run(+req.params.id);
+  res.json({ ok: true });
+});
+
 app.listen(PORT, () => console.log(`Warehouse API running on http://localhost:${PORT}`));

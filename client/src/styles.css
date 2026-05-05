@@ -98,7 +98,7 @@ body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono',
 .rack-type-row { display: flex; gap: 8px; margin-bottom: 12px; }
 .rack-type-btn { padding: 6px 18px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--dim); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; }
 .rack-type-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.et-level-row { display: flex; gap: 2px; }
+.et-level-row { display: flex; gap: 2px; border-bottom: 1px solid var(--border);}
 
 .subtitle { font-size: 14px; font-weight: 600; margin: 0 0 8px 0; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
 

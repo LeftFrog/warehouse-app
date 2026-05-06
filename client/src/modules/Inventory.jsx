@@ -15,7 +15,7 @@ const SECTIONS = [];
 const LEVELS = [6,5,4,3,2,1];
 
 // EasyTrim: update section counts per row to match actual rack layout
-const ET_SECTION_MAX = { A: 9, B: 24, C: 24, D: 24 };
+const ET_SECTION_MAX = { A: 24, B: 24, C: 24, D: 24 };
 const ET_SECTIONS = [];
 ["A","B","C","D"].forEach(letter => {
   for (let i = 1; i <= ET_SECTION_MAX[letter]; i++) ET_SECTIONS.push(`${letter}${i}`);

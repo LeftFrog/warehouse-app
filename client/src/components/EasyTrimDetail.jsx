@@ -81,7 +81,6 @@ export default function EasyTrimDetail({ skidKey, onBack }) {
 
       {adding && <ProductForm
         requireSku={true}
-        skuCategory="EasyTrim"
         onSave={handleAdd}
         onCancel={() => setAdding(false)}
       />}

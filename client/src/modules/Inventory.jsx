@@ -332,6 +332,27 @@ export default function Inventory() {
                   );
                 })}
               </div>
+    
+              <div className="floor-section">
+                <div className="floor-header">
+                  <h3 className="subtitle">Floor Skids ({floors.length})</h3>
+                  <button className="add-btn" onClick={async () => { await api.addFloorSkid(''); reload(); }}>+ Add Floor Skid</button>
+                </div>
+                {floors.length === 0 && <div className="empty-msg">No floor skids yet.</div>}
+                {floors.map(f => (
+                  <div key={f.id} className="floor-skid" onClick={() => { setSelectedFloor(f.id); setView('floor-skid'); }}>
+                    <div className="skid-loc">{f.verified ? '✅ ' : ''}{f.name || 'Unnamed'}</div>
+                    <div className="skid-info">
+                      {f.is_order && <span className="so-badge">SO {f.so_number || '?'}</span>}
+                      {f.products?.slice(0, 2).map((p, i) => (
+                        <span key={i} className="mini-product">{p.name} ({p.qty})</span>
+                      ))}
+                      {f.products?.length > 2 && <span className="more-tag">+{f.products.length - 2} more</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>            
+
             </div>
           )}
         </div>

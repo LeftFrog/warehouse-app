@@ -8,3 +8,4 @@ warehouse.db-wal
 seed-data.json
 /server/serviceAccountKey.json
 sku_master.json
+.DS_Store

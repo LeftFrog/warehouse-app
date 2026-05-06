@@ -322,6 +322,24 @@ app.get('/api/export-excel', (req, res) => {
     }
   }
 
+  const et_rackSkids = db.prepare(`SELECT * FROM easytrim_skids ORDER BY section, level, position`).all();
+  for (const es of et_rackSkids) {
+    const et_products = db.prepare(`SELECT * FROM easytrim_products WHERE skid_id=? ORDER BY id`).all(es.id);
+    for (const ep of et_products) {
+      inventory.push({
+        location: `${es.section}-${es.level}-${es.position}`,
+        type: 'Rack',
+        sku: ep.name,
+        qty: ep.qty,
+        verified: es.verified ? 'Yes' : 'No',
+        verified_at: es.verified_at || '',
+        is_order: es.is_order ? 'Yes' : 'No',
+        so_number: es.so_number || '',
+        notes: ep.notes || ''
+      });
+    }
+  }
+
   // SKU summary
   const summary = {};
   for (const row of inventory) {
